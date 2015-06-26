@@ -5,55 +5,57 @@
  */
 package katabank;
 import java.util.List;
+import java.util.ArrayList;
 /**
  *
  * @author exterminator
  */
 public class LinesToNumbers {
     private String number;
+    private WriteToFile writer;
+    private List toBePrinted;
     public LinesToNumbers(){
+        this.toBePrinted = new ArrayList<>();
+        this.writer = new WriteToFile();
     }
     public String convert(String inputNumbers){
-        String convertedNumbers = "";
+        StringBuilder convertedNumbers = new StringBuilder();
         CodeRecognition key = new CodeRecognition();
+        //a key to run through CodeRecognition so it knows what each letter should look like
         List<String> codeKey = key.numberIsolation(
                                                    " _     _  _     _  _  _  _  _ \n" 
         +                                          "| |  | _| _||_||_ |_   ||_||_|\n"
                 +                                  "|_|  ||_  _|  | _||_|  ||_| _|\n"
                 +                                  "                              ");
         List<String> seperatedInput = key.numberIsolation(inputNumbers);
+        //goes through each number in the given string
         for(int b = 0; b < seperatedInput.size(); b++){
-            boolean notNumber = true;
-            int checkedNumbers = 0;
-            for(int i = 0; i < codeKey.size(); i++){
+            for(int i = 0; i < codeKey.size(); i++){           
                 if(codeKey.get(i).equals(seperatedInput.get(b))){
-                    convertedNumbers += i;
-                }else{
-                    checkedNumbers++;
+                    convertedNumbers.append(i);
                 }
             }
-            if (checkedNumbers == 10){
-                    convertedNumbers += "?";
-            }  
-            
-        }
-        if(convertedNumbers.contains("?")){
-            convertedNumbers += " ILL";
-        }else{
-            if(!accountValidation(convertedNumbers)){
-                convertedNumbers += " ERR";
+            //checks if the number is valid, if not it adds a question mark
+            if(!codeKey.contains(seperatedInput.get(b))){
+                convertedNumbers.append("?");
             }
         }
-        return convertedNumbers;
+        //uses the errorCheckmethod to figure out if it is a valid input or not 
+        String finalNumbers = convertedNumbers.toString() + errorCheck(convertedNumbers.toString());
+        //puts them in an array to be printed out
+        this.toBePrinted.add(finalNumbers);
+        return finalNumbers;
+    }
+    public String errorCheck(String convertedNumbers){
+        if(convertedNumbers.contains("?")){
+            return " ILL";
+        }
+        if(!accountValidation(convertedNumbers.toString())){
+                return " ERR";
+        }
+        return "";
     }
     public boolean accountValidation(String convertedNumbers){
-//        int lastNumber = convertedNumbers.indexOf(convertedNumbers.length());
-//        int added = lastNumber;
-//        int firstNumber = 2;
-//        for(int i = lastNumber; i > 0; i--){
-//            added += convertedNumbers.charAt(i) * firstNumber;
-//            firstNumber++;
-//        }
         int total = 0;
         int count = 2;
         for(int i = convertedNumbers.length(); i < 0; i++){
@@ -61,11 +63,9 @@ public class LinesToNumbers {
             count++;
         }
         double added = Math.pow(total, 9);
-        if(added % 11 == 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return added % 11 == 0;
+    }
+    public void writeToFile(){
+        this.writer.writeFile(this.toBePrinted);
     }
 }
