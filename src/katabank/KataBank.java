@@ -17,8 +17,20 @@ public class KataBank {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        LinesToNumbers b = new LinesToNumbers();
+        b.convert("    _  _     _  _  _  _  _ \n" +
+"  | _| _||_| _ |_   ||_||_|\n" +
+"  ||_  _|  | _||_|  ||_| _ \n" +
+"                           ");
         LinesToNumbers d = new LinesToNumbers();
-        File file = new File("test.txt");
+        b.convert("    _  _  _  _  _  _     _ \n" +
+"|_||_|| || ||_   |  |  | _ \n" +
+"  | _||_||_||_|  |  |  | _|\n" +
+"                           ");
+        b.writeToFile();
+        
+//        WriteToFile a = new WriteToFile();
+//        a.writeNewLine("hi");
         
 //        System.out.println(d.convert(" _  _  _  _  _  _  _  _  _ \n" +
 //"| || || || || || || || || |\n" +
