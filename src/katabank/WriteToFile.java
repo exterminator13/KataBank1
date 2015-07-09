@@ -6,27 +6,28 @@
 package katabank;
 import java.io.File;
 import java.io.FileWriter;
-
+import java.io.PrintWriter;
+import java.util.List;
 /**
  *
  * @author exterminator
  */
 public class WriteToFile {
     File file;
-    FileWriter fileWriter;
+    PrintWriter printWriter;
     public WriteToFile(){
-        this.file = new File("test.txt");
-        try{
-        this.fileWriter = new FileWriter("test.txt");
-        }catch(Exception d){
-                System.out.println(d);        
-        }
+        this.file = new File("src/test.txt");
+        
     }
-    public void writeNewLine(String newLine){
+    public void writeFile(List<String> collection){
         try{
-            this.fileWriter.write(newLine + "\n");
+            printWriter = new PrintWriter("src/KataBank/test.txt");
+            for(String numberOutput : collection){
+                printWriter.write(numberOutput + "\n");
+            }
+            printWriter.close();
         }catch(Exception d){
-            System.out.println(d);
+                System.out.println(d.getStackTrace());        
         }
     }
 }
