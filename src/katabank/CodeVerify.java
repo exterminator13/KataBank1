@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package katabank;
 
 import java.util.ArrayList;
@@ -31,17 +26,14 @@ public class CodeVerify {
         return "";
     }
     public boolean accountValidation(String convertedNumbers){
+        //checksum calculation: (d1+2*d2+3*d3 +..+9*d9) mod 11 = 0
         if(!convertedNumbers.contains("?")){
-            String d = convertedNumbers.charAt(convertedNumbers.length()-1) + "";
-            int total = Integer.parseInt(d);
-            int count = 2;
-        
+            int total = Character.getNumericValue(convertedNumbers.charAt(convertedNumbers.length()-1));
+            int count = 2;       
             for(int i = convertedNumbers.length()-2; i >= 0; i = i - 1){
-                String number = convertedNumbers.charAt(i) + "";
-                int b = Integer.parseInt(number);
+                int b = Character.getNumericValue(convertedNumbers.charAt(i));
                 total += (b * count);
                 count++;
-                
             }
                 return (total % 11 == 0);
             }else{
@@ -51,37 +43,36 @@ public class CodeVerify {
         //use only for case 4
     public String findValidation(String inputNumbers){
         List<String> validNumber = new ArrayList();
-        List<String> errCode = this.recognize.numberIsolation(inputNumbers);
-        String converted = this.linesToNumbers.convert(errCode);
+        List<String> inputCode = this.recognize.numberIsolation(inputNumbers);
+        String converted = this.linesToNumbers.convert(inputCode);
         if(accountValidation(converted)){
             return converted;
         }else{
             String libChanges = "|_ ";
             for(int l = 0; l < libChanges.length(); l++){
-            //Replacing each character with an underscore
-            for(int b = 0; b < errCode.size(); b++){
-    //            String originalNumber = errCode.get(b);
-                char[] newNumber = errCode.get(b).toCharArray();
-                for(int i = 0; i < newNumber.length; i++){
-                    char original = newNumber[i];
-                    newNumber[i] = libChanges.charAt(l);
-                    String outputNumber = new String(newNumber);
-                    errCode.set(b, outputNumber);
-                    if(this.accountValidation(this.linesToNumbers.convert(errCode))){
-                        validNumber.add("'" + this.linesToNumbers.convert(errCode) + "'");
+            //Replacing each character with a new character in libChanges
+                for(int b = 0; b < inputCode.size(); b++){
+                    char[] newNumber = inputCode.get(b).toCharArray();
+                    for(int i = 0; i < newNumber.length; i++){
+                        char original = newNumber[i];
+                        newNumber[i] = libChanges.charAt(l);
+                        String outputNumber = new String(newNumber);
+                        inputCode.set(b, outputNumber);
+                        if(this.accountValidation(this.linesToNumbers.convert(inputCode))){
+                            validNumber.add("'" + this.linesToNumbers.convert(inputCode) + "'");
+                        }
+                        newNumber[i] = original;
+                            String originalNumber = new String(newNumber);
+                            inputCode.set(b, originalNumber);
                     }
-                    newNumber[i] = original;
-                        String originalNumber = new String(newNumber);
-                        errCode.set(b, originalNumber);
-                }
-            }           
+                }           
             }
             if(validNumber.size() <= 1){
                 return validNumber.toString().substring(2,validNumber.toString().length()-2);
             }else{
                 Collections.sort(validNumber);
-                return linesToNumbers.convert(errCode) + " AMB " + validNumber.toString();
-        }
+                return linesToNumbers.convert(inputCode) + " AMB " + validNumber.toString();
+            }
         }
     }
 }
