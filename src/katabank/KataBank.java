@@ -4,6 +4,7 @@ import katabank.CodeRecognition;
  *
  * @author exterminator
  */
+//link to kata guidelines: http://codingdojo.org/cgi-bin/index.pl?KataBankOCR
 public class KataBank {
 
     /**
